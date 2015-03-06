@@ -38,6 +38,5 @@ class HL7ReceiverSpec extends TestKit(ActorSystem("hl7parser"))
       hl7ReceiverActor ! GetState(testActor)
       expectMsg(Vector("msg1", "msg2"))
     }
-
   }
 }
