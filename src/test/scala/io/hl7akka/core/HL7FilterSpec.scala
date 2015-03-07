@@ -48,5 +48,25 @@ class HL7FilterSpec extends TestKit(ActorSystem("hl7filter"))
     messagesIds must be(List(1, 2, 3, 4, 5))
     expectMsg(HL7Message(6))
   }
+
+  "filter out particular messages using expectNoMsg" in {
+    import io.hl7akka.core.actor.HL7Filter
+    import io.hl7akka.core.actor.HL7FilterProtocol._
+
+    val props = Props(new HL7Filter(testActor, 5))
+    val filter = system.actorOf(props)
+
+    filter ! HL7Message(1)
+    filter ! HL7Message(2)
+    expectMsg(HL7Message(1))
+    expectMsg(HL7Message(2))
+    filter ! HL7Message(1)
+    expectNoMsg()
+    filter ! HL7Message(3)
+    expectMsg(HL7Message(3))
+    filter ! HL7Message(3)
+    expectNoMsg()
+  }
+
 }
 
