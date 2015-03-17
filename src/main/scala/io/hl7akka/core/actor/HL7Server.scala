@@ -69,6 +69,7 @@ object HL7MessageWorkflowProtocol {
 
   case object HL7MessageAccepted
   case object HL7MessageInvalid
+  case object HL7MessageInvalidEncoding
 
 }
 
@@ -83,7 +84,7 @@ class HL7Responder(requestContext: RequestContext) extends Actor with ActorLoggi
       requestContext.complete(StatusCodes.OK)
       self ! PoisonPill
 
-    case HL7MessageInvalid =>
+    case HL7MessageInvalid | HL7MessageInvalidEncoding =>
       log.info("HL7 Message invalid")
       requestContext.complete(StatusCodes.BadRequest)
       self ! PoisonPill

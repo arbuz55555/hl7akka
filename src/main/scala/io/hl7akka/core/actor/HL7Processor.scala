@@ -5,6 +5,8 @@ import ca.uhn.hl7v2.model.v22.message.ADT_A01
 import ca.uhn.hl7v2.{HL7Exception, DefaultHapiContext}
 import ca.uhn.hl7v2.model.Message
 import ca.uhn.hl7v2.parser.EncodingNotSupportedException
+import scala.concurrent.duration._
+import akka.util.Timeout
 
 /**
 * Copyright 2011-2014 Lukasz Sztygiel 5x5 Solutions LTD (www.5x5sols.com)
@@ -25,6 +27,9 @@ class HL7Processor extends Actor with ActorLogging {
 
   import io.hl7akka.core.actor.HL7MessageProtocol._
   import io.hl7akka.core.actor.HL7MessageWorkflowProtocol._
+  import context._
+
+  implicit val timeout = Timeout(5 seconds)
 
   def receive = {
 
@@ -39,7 +44,7 @@ class HL7Processor extends Actor with ActorLogging {
         sender ! HL7MessageAccepted
       } catch {
         case e:EncodingNotSupportedException =>
-
+          sender ! HL7MessageInvalidEncoding
         case e1:HL7Exception =>
           sender ! HL7MessageInvalid
       }
