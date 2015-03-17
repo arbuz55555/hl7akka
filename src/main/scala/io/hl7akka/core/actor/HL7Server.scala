@@ -66,11 +66,9 @@ trait HL7ServerApi extends HttpService with ActorLogging {
 }
 
 object HL7MessageWorkflowProtocol {
-
   case object HL7MessageAccepted
   case object HL7MessageInvalid
   case object HL7MessageInvalidEncoding
-
 }
 
 class HL7Responder(requestContext: RequestContext) extends Actor with ActorLogging {
