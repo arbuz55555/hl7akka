@@ -24,6 +24,7 @@ import ca.uhn.hl7v2.parser.EncodingNotSupportedException
 class HL7Processor extends Actor with ActorLogging {
 
   import io.hl7akka.core.actor.HL7MessageProtocol._
+  import io.hl7akka.core.actor.HL7MessageWorkflowProtocol._
 
   def receive = {
 
@@ -35,20 +36,13 @@ class HL7Processor extends Actor with ActorLogging {
 
       try {
         hpiMsg = p.parse(data)
+        sender ! HL7MessageAccepted
       } catch {
-        case e:EncodingNotSupportedException => e.printStackTrace()
-        case e1:HL7Exception => e1.printStackTrace()
+        case e:EncodingNotSupportedException =>
+
+        case e1:HL7Exception =>
+          sender ! HL7MessageInvalid
       }
-
-      val adtMsg = hpiMsg.asInstanceOf[ADT_A01]
-      val msh = adtMsg.getMSH
-
-      val msgTrigger = msh.getMessageType.getTriggerEvent.getValue
-      val msgType = msh.getMessageType.getMessageType.getValue
-
-      log.info(s"ADT type ${msgType} ")
-
-      self ! PoisonPill
 
     case ObsMessage(data) =>
       log.info("Obs processor")

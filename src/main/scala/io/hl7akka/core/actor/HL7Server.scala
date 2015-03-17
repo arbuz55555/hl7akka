@@ -65,14 +65,27 @@ trait HL7ServerApi extends HttpService with ActorLogging {
   }
 }
 
-class HL7Responder(requestContext: RequestContext) extends Actor with ActorLogging {
+object HL7MessageWorkflowProtocol {
 
-  def receive = {
-    case _ =>
-      log.info("Responder")
-      requestContext.complete(StatusCodes.OK)
-      self ! PoisonPill
-  }
+  case object HL7MessageAccepted
+  case object HL7MessageInvalid
 
 }
 
+class HL7Responder(requestContext: RequestContext) extends Actor with ActorLogging {
+
+  import io.hl7akka.core.actor.HL7MessageWorkflowProtocol._
+
+  def receive = {
+
+    case HL7MessageAccepted =>
+      log.info("HL7 Message accepted")
+      requestContext.complete(StatusCodes.OK)
+      self ! PoisonPill
+
+    case HL7MessageInvalid =>
+      log.info("HL7 Message invalid")
+      requestContext.complete(StatusCodes.BadRequest)
+      self ! PoisonPill
+  }
+}
