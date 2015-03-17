@@ -1,7 +1,6 @@
 package io.hl7akka.core.actor
 
-import akka.actor.{PoisonPill, ActorRef, Actor, ActorLogging}
-import ca.uhn.hl7v2.model.v22.message.ADT_A01
+import akka.actor.{Actor, ActorLogging}
 import ca.uhn.hl7v2.{HL7Exception, DefaultHapiContext}
 import ca.uhn.hl7v2.model.Message
 import ca.uhn.hl7v2.parser.EncodingNotSupportedException
@@ -58,7 +57,6 @@ class HL7Processor extends Actor with ActorLogging {
 object HL7MessageProtocol {
 
   import spray.httpx.unmarshalling._
-  import spray.util._
   import spray.http._
 
   trait HL7Message {
