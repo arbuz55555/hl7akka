@@ -34,12 +34,12 @@ class HL7Processor extends Actor with ActorLogging {
 
     case AdtMessage(data) =>
       val hapiContext = new DefaultHapiContext()
-      val p = hapiContext.getGenericParser()
+      val parser = hapiContext.getGenericParser()
 
       var hpiMsg:Message = null
 
       try {
-        hpiMsg = p.parse(data)
+        hpiMsg = parser.parse(data)
         sender ! HL7MessageAccepted
       } catch {
         case e:EncodingNotSupportedException =>
