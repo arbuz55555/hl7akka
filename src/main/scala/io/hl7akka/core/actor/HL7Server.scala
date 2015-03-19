@@ -46,7 +46,7 @@ trait HL7ServerApi extends HttpService with ActorLogging {
         entity(as[AdtMessage]) { adtMessage: AdtMessage => requestContext: RequestContext =>
           val responder = createHl7Responder(requestContext)
           log.info(s"Receiving adt message ${adtMessage}.")
-          processor.ask(AdtMessageVersioned(adtMessage, adtVersion)).pipeTo(responder)
+          processor.ask(AdtMessageVersioned(adtMessage, adtVersion.toString)).pipeTo(responder)
         }
       }
     } ~

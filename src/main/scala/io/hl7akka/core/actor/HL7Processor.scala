@@ -31,7 +31,7 @@ class HL7Processor extends Actor with ActorLogging {
 
   def receive = {
 
-    case AdtMessageVersioned(adtMessage, _) =>
+    case AdtMessageVersioned(adtMessage, adtVersion) =>
       val hapiContext = new DefaultHapiContext()
       val parser = hapiContext.getGenericParser()
 
@@ -86,7 +86,7 @@ object HL7MessageProtocol {
 
   case class ObsMessage(override val data: String) extends HL7Message
 
-  case class AdtMessageVersioned(adtMessage: AdtMessage, adtVersion: Int)
+  case class AdtMessageVersioned(adtMessage: AdtMessage, adtVersion: String)
 
 }
 
