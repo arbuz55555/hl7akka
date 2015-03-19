@@ -31,14 +31,14 @@ class HL7Processor extends Actor with ActorLogging {
 
   def receive = {
 
-    case AdtMessageVersioned(adtMessage, adtVersion) =>
+    case AdtMessage(data, version) =>
       val hapiContext = new DefaultHapiContext()
       val parser = hapiContext.getGenericParser()
 
       var hpiMsg:Message = null
 
       try {
-        hpiMsg = parser.parse(adtMessage.data)
+        hpiMsg = parser.parse(data)
         sender ! HL7MessageAccepted
       } catch {
         case e:EncodingNotSupportedException =>
@@ -47,8 +47,8 @@ class HL7Processor extends Actor with ActorLogging {
           sender ! HL7MessageInvalid
       }
 
-    case ObsMessage(data) =>
-      log.info("Obs processor")
+    case CustomMessage(data) =>
+      log.info("Custom processor")
 
   }
 }
@@ -70,23 +70,24 @@ object HL7MessageProtocol {
   val `application/hl7-v2` =
     MediaTypes.register(MediaType.custom("application/hl7-v2"))
 
-  implicit val adtMessageUnmarshaller =
-    Unmarshaller[AdtMessage](`x-application/hl7-v2+er7`, `application/hl7-v2`) {
+  implicit val standardMessageUnmarshaller =
+    Unmarshaller[StandardMessage](`x-application/hl7-v2+er7`, `application/hl7-v2`) {
       case HttpEntity.NonEmpty(contentType, data) =>
-        AdtMessage(data.asString)
+        StandardMessage(data.asString)
     }
 
-  implicit val obsMessageUnmarshaller =
-    Unmarshaller[ObsMessage](`x-application/hl7-v2+er7`, `application/hl7-v2`) {
+  implicit val customMessageUnmarshaller =
+    Unmarshaller[CustomMessage](`x-application/hl7-v2+er7`, `application/hl7-v2`) {
       case HttpEntity.NonEmpty(contentType, data) =>
-        ObsMessage(data.asString)
+        CustomMessage(data.toString)
+
     }
 
-  case class AdtMessage(override val data: String) extends HL7Message
+  case class StandardMessage(override val data: String) extends HL7Message
 
-  case class ObsMessage(override val data: String) extends HL7Message
+  case class CustomMessage(override val data: String) extends HL7Message
 
-  case class AdtMessageVersioned(adtMessage: AdtMessage, adtVersion: String)
+  case class AdtMessage(override val data: String, adtVersion: String) extends HL7Message
 
 }
 

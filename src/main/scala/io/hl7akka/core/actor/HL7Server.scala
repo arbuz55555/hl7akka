@@ -43,19 +43,19 @@ trait HL7ServerApi extends HttpService with ActorLogging {
 
     path("adt" / IntNumber) { adtVersion =>
       post {
-        entity(as[AdtMessage]) { adtMessage: AdtMessage => requestContext: RequestContext =>
+        entity(as[StandardMessage]) { standardMessage: StandardMessage => requestContext: RequestContext =>
           val responder = createHl7Responder(requestContext)
-          log.info(s"Receiving adt message ${adtMessage}.")
-          processor.ask(AdtMessageVersioned(adtMessage, adtVersion.toString)).pipeTo(responder)
+          log.info(s"Receiving adt message ${standardMessage}.")
+          processor.ask(AdtMessage(standardMessage.data, adtVersion.toString)).pipeTo(responder)
         }
       }
     } ~
     path("obs") {
       post {
-        entity(as[ObsMessage]) { obsMessage: ObsMessage => requestContext: RequestContext =>
+        entity(as[CustomMessage]) { customMessage: CustomMessage => requestContext: RequestContext =>
           val responder = createHl7Responder(requestContext)
-          log.info(s"Receiving obs message ${obsMessage}.")
-          processor.ask(obsMessage).pipeTo(responder)
+          log.info(s"Receiving obs message ${customMessage}.")
+          processor.ask(customMessage).pipeTo(responder)
         }
       }
     }
