@@ -2,7 +2,7 @@ package io.hl7akka.core
 
 import akka.testkit.{ImplicitSender, TestKit}
 import akka.actor.{Props, ActorSystem}
-import io.hl7akka.core.actor.HL7MessageProtocol.AdtMessage
+import io.hl7akka.core.actor.HL7MessageProtocol._
 import io.hl7akka.core.actor.HL7Processor
 import org.scalatest.{WordSpecLike, MustMatchers}
 import io.hl7akka.core.actor.HL7MessageWorkflowProtocol._
@@ -37,7 +37,7 @@ class HL7ProcessorSpec extends TestKit(ActorSystem("hl7tests"))
       val invMsg = "MSH|^^^~\\&|MedSeries|CAISI_1-2|PLS|3910|200903230934||ADT^A31^ADT_A05|75535037-1237815294895|P^T|2.4\r" +
         "EVN|0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789|200903230934\r" +
         "PID|1||29^^CAISI_1-2^PI~\"\"||Test300^Leticia^^^^^L||19770202|M||||||||||||||||||||||"
-      processor ! AdtMessage(invMsg)
+      processor ! AdtMessageVersioned(AdtMessage(invMsg), 22)
       expectMsg(HL7MessageInvalid)
 
     }
@@ -50,7 +50,7 @@ class HL7ProcessorSpec extends TestKit(ActorSystem("hl7tests"))
         "AL1||SEV|001^POLLEN\r" +
         "GT1||0222PL|NOTREAL^BOB^B||STREET^OTHER STREET^CITY^ST^77787|(444)999-3333|(222)777-5555||||MO|111-33-5555||||NOTREAL GILL N|STREET^OTHER STREET^CITY^ST^99999|(111)222-3333\r" +
         "IN1||022254P|4558PD|BLUE CROSS|STREET^OTHER STREET^CITY^ST^00990||(333)333-6666||221K|LENIX|||19980515|19990515|||PATIENT01 TEST D||||||||||||||||||02LL|022LP554"
-      processor ! AdtMessage(msg)
+      processor ! AdtMessageVersioned(AdtMessage(msg), 22)
       expectMsg(HL7MessageAccepted)
     }
   }

@@ -25,8 +25,15 @@ libraryDependencies ++= {
     "com.typesafe.akka" %% "akka-slf4j"      % akkaVersion,
     "com.typesafe.akka" %% "akka-testkit"    % akkaVersion   % "test",
     "org.scalatest"     %% "scalatest"       % "2.2.0"       % "test",
-    "ca.uhn.hapi" % "hapi-base" % "2.2",
-    "ca.uhn.hapi" % "hapi-structures-v22" % "2.2"
+    "ca.uhn.hapi" % "hapi-base" % hapiVersion,
+    "ca.uhn.hapi" % "hapi-structures-v21" % hapiVersion,
+    "ca.uhn.hapi" % "hapi-structures-v22" % hapiVersion,
+    "ca.uhn.hapi" % "hapi-structures-v23" % hapiVersion,
+    "ca.uhn.hapi" % "hapi-structures-v231" % hapiVersion,
+    "ca.uhn.hapi" % "hapi-structures-v24" % hapiVersion,
+    "ca.uhn.hapi" % "hapi-structures-v25" % hapiVersion,
+    "ca.uhn.hapi" % "hapi-structures-v251" % hapiVersion,
+    "ca.uhn.hapi" % "hapi-structures-v26" % hapiVersion
   )
 }
 

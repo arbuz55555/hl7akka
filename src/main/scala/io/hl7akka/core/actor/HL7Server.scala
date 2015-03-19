@@ -41,12 +41,12 @@ trait HL7ServerApi extends HttpService with ActorLogging {
 
   def routes: Route =
 
-    path("adt") {
+    path("adt" / IntNumber) { adtVersion =>
       post {
         entity(as[AdtMessage]) { adtMessage: AdtMessage => requestContext: RequestContext =>
           val responder = createHl7Responder(requestContext)
           log.info(s"Receiving adt message ${adtMessage}.")
-          processor.ask(adtMessage).pipeTo(responder)
+          processor.ask(AdtMessageVersioned(adtMessage, adtVersion)).pipeTo(responder)
         }
       }
     } ~

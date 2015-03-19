@@ -26,20 +26,19 @@ class HL7Processor extends Actor with ActorLogging {
 
   import io.hl7akka.core.actor.HL7MessageProtocol._
   import io.hl7akka.core.actor.HL7MessageWorkflowProtocol._
-  import context._
 
   implicit val timeout = Timeout(5 seconds)
 
   def receive = {
 
-    case AdtMessage(data) =>
+    case AdtMessageVersioned(adtMessage, _) =>
       val hapiContext = new DefaultHapiContext()
       val parser = hapiContext.getGenericParser()
 
       var hpiMsg:Message = null
 
       try {
-        hpiMsg = parser.parse(data)
+        hpiMsg = parser.parse(adtMessage.data)
         sender ! HL7MessageAccepted
       } catch {
         case e:EncodingNotSupportedException =>
@@ -64,6 +63,7 @@ object HL7MessageProtocol {
     override def toString = data
   }
 
+
   val `x-application/hl7-v2+er7` =
     MediaTypes.register(MediaType.custom("x-application/hl7-v2+er7"))
 
@@ -85,6 +85,8 @@ object HL7MessageProtocol {
   case class AdtMessage(override val data: String) extends HL7Message
 
   case class ObsMessage(override val data: String) extends HL7Message
+
+  case class AdtMessageVersioned(adtMessage: AdtMessage, adtVersion: Int)
 
 }
 
